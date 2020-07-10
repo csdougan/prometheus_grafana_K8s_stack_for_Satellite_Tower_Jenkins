@@ -1,0 +1,55 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafana
+  namespace: grafana-infra-sit
+  labels:
+    app: grafana
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: grafana
+  template:
+    metadata:
+      labels:
+        app: grafana
+    spec:
+      containers:
+        - name: grafana
+          image: grafana/grafana:7.0.6
+          env:
+            - name: GF_SECURITY_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: grafana-admin-pwd
+                  key: password
+          ports:
+            - containerPort: 3000
+          volumeMounts:
+            - name: var-lib-grafana-vol
+              mountPath: /var/lib/grafana
+            - name: var-log-grafana-vol
+              mountPath: /var/log/grafana
+            - name: etc-grafana-vol
+              mountPath: /etc/grafana
+            - name: grafana-ini-configmap
+              mountPath: /etc/grafana/grafana.ini
+              subPath: grafana.ini
+      volumes:
+        - name: var-lib-grafana-vol
+          persistentVolumeClaim:
+            claimName: var-lib-grafana-claim
+        - name: var-log-grafana-vol
+          persistentVolumeClaim:
+            claimName: var-log-grafana-claim
+        - name: etc-grafana-vol
+          persistentVolumeClaim:
+            claimName: etc-grafana-claim
+        - name: grafana-ini-configmap
+          configMap:
+            name: grafana-ini-v1-0
+            items:
+              - key: grafana.ini
+                path: grafana.ini

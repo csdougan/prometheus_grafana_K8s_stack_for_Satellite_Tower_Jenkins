@@ -1,0 +1,46 @@
+---
+- hosts: all
+  gather_facts: false
+  become: true
+  vars:
+    node_exporter_user: prometheus
+    node_exporter_version: 0.16.0
+    node_exporter_classifier: linux-amd64
+    install_base: /opt/node_exporter
+    package_name: "node_exporter-{{ node_exporter_version }}.{{ node_exporter_classifier }}.tar.gz"
+  tasks:
+   - name: "Add {{ node_exporter_user }} user to run node exporter under"
+     user:
+       name: "{{ node_exporter_user }}"
+       state: present
+
+   - name: make directory for node exporter
+     file:
+       path: "{{ item }}"
+       state: directory
+       owner: "{{ node_exporter_user }}"
+     loop: ["{{ install_base }}","{{ install_base }}/bin","{{ install_base }}/packages"]
+
+   - name: copy node installer package out
+     unarchive:
+       src: "files/{{ package_name }}"
+       dest: "{{ install_base }}/packages"
+       owner: "{{ node_exporter_user }}"
+
+   - name: Symlink extracted package
+     file:
+       src: "{{ install_base }}/packages/node_exporter-{{ node_exporter_version }}.{{ node_exporter_classifier }}/node_exporter"
+       dest: "{{ install_base }}/bin/node_exporter"
+       state: link
+
+   - name: Template out systemd script
+     template:
+       src: templates/node_exporter.service.j2
+       dest: /etc/systemd/system/node_exporter.service
+
+   - name: reload systemd
+     systemd:
+       name: node_exporter
+       enabled: yes
+       state: started
+       daemon_reload: yes

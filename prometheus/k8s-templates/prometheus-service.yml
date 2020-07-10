@@ -1,0 +1,36 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prometheus-service
+  namespace: prometheus-infra-sit
+  annotations:
+    prometheus.io/scrape: 'true'
+    prometheus.io/port: '9090'
+spec:
+  selector:
+    app: prometheus-server
+  type: NodePort
+  ports:
+    - port: 8080
+      targetPort: 9090
+      nodePort: 30001
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kube-state-metrics
+  namespace: prometheus-infra-sit
+  labels:
+    app: kube-state-metrics
+  annotations:
+    prometheus.io/scrape: 'true'
+spec:
+  ports:
+    - name: metrics
+      port: 8080
+      targetPort: metrics
+      protocol: TCP
+  selector:
+    app: kube-state-metrics

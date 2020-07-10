@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cd-jenkins-deployment
+  labels:
+    app: cd-jenkins
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: cd-jenkins
+  template:
+    metadata:
+      labels:
+        app: cd-jenkins
+    spec:
+      containers:
+      - name: cd-jenkins
+        image: cdougan/jenkins_with_docker
+        ports:
+         - containerPort: 8080
+ 

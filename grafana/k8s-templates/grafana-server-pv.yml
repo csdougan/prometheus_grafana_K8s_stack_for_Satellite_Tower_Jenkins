@@ -1,0 +1,84 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: var-lib-grafana
+  namespace: grafana-infra-sit
+  labels: 
+    app: grafana
+    role: server
+spec:
+  storageClassName: grafana-sc
+  capacity: 
+    storage: 5Gi
+  accessModes:
+   - ReadWriteOnce
+  hostPath:
+    path: "/mnt/data/grafana-infra-sit/var-lib-grafana"
+  persistentVolumeReclaimPolicy: Recycle
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+       - matchExpressions:
+           - key: grafanaLocalStorage
+             operator: In
+             values:
+              - 'true'
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: etc-grafana
+  namespace: grafana-infra-sit
+  labels: 
+    app: grafana
+    role: server
+spec:
+  storageClassName: grafana-sc
+  capacity: 
+    storage: 5Gi
+  accessModes:
+   - ReadWriteOnce
+  hostPath:
+    path: "/mnt/data/grafana-infra-sit/etc-grafana"
+  persistentVolumeReclaimPolicy: Recycle
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+       - matchExpressions:
+           - key: grafanaLocalStorage
+             operator: In
+             values:
+              - 'true'
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: var-log-grafana
+  namespace: grafana-infra-sit
+  labels: 
+    app: grafana
+    role: server
+spec:
+  storageClassName: grafana-sc
+  capacity: 
+    storage: 5Gi
+  accessModes:
+   - ReadWriteOnce
+  hostPath:
+    path: "/mnt/data/grafana-infra-sit/var-log-grafana"
+  persistentVolumeReclaimPolicy: Recycle
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+       - matchExpressions:
+           - key: grafanaLocalStorage
+             operator: In
+             values:
+              - 'true'
+
+
+
+

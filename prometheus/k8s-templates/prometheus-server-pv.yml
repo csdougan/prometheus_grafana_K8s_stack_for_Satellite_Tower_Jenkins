@@ -1,0 +1,27 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: prometheus-server-pv
+  namespace: prometheus-infra-sit
+  labels: 
+    app: prometheus
+    role: server
+spec:
+  storageClassName: prometheus-sc
+  capacity: 
+    storage: 5Gi
+  accessModes:
+   - ReadWriteOnce
+  hostPath:
+   path: "/mnt/data/prometheus-server"
+  persistentVolumeReclaimPolicy: Recycle
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+       - matchExpressions:
+           - key: prometheusLocalStorage
+             operator: In
+             values:
+              - 'true'
+

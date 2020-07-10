@@ -1,0 +1,14 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: prometheus-server-pvc
+  namespace: prometheus-infra-sit
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: prometheus-sc
+  resources:
+    requests:
+      storage: 5Gi
+  

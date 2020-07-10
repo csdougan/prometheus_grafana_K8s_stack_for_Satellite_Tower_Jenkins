@@ -1,0 +1,7 @@
+[Unit]
+Description=Node Exporter
+[Service]
+User={{ node_exporter_user }}
+ExecStart={{ install_base }}/bin/node_exporter
+[Install]
+WantedBy=default.target
