@@ -37,6 +37,18 @@ spec:
             - name: grafana-ini-configmap
               mountPath: /etc/grafana/grafana.ini
               subPath: grafana.ini
+            - name: grafana-datasource-configmap
+              mountPath: /etc/grafana/provisioning/datasources/prom.yaml
+              subPath: prom.yaml
+            - name: grafana-dashboard-configmap
+              mountPath: /etc/grafana/provisioning/dashboards/config.yaml
+              subPath: config.yaml
+            - name: grafana-dash-k8s-all-nodes  
+              mountPath: /etc/config/dashboards/k8sallnodes.json  
+              subPath: k8sallnodes.json
+            - name: grafana-dash-foreman 
+              mountPath: /etc/config/dashboards/foreman.json  
+              subPath: foreman.json
       volumes:
         - name: var-lib-grafana-vol
           persistentVolumeClaim:
@@ -53,3 +65,27 @@ spec:
             items:
               - key: grafana.ini
                 path: grafana.ini
+        - name: grafana-datasource-configmap
+          configMap:
+            name: grafana-ds-v1-0
+            items:
+              - key: prom.yaml
+                path: prom.yaml
+        - name: grafana-dashboard-configmap
+          configMap:
+            name: grafana-dashboard-main-v1-0
+            items:
+              - key: config.yaml
+                path: config.yaml
+        - name: grafana-dash-k8s-all-nodes  
+          configMap:
+            name: dashboard-k8s-all-nodes-v1-0
+            items:
+              - key: k8sallnodes.json
+                path: k8sallnodes.json
+        - name: grafana-dash-foreman 
+          configMap:
+            name: dashboard-foreman-v1-0
+            items:
+              - key: foreman.json
+                path: foreman.json

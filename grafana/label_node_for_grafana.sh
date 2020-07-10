@@ -1,1 +1,1 @@
-kubectl label node mynode2 grafanaLocalStorage=true
+kubectl label node grafana_node grafanaLocalStorage=true

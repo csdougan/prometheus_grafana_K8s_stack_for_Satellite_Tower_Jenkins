@@ -1,18 +1,33 @@
 ---
+ - hosts: grafana_k8s_node
+   gather_facts: false
+   connection: local
+   become: true
+   vars:
+     mount_basedir: /mnt/data/grafana-infra-sit
+   tasks:
+     - name: create mounting directories for persistent vols
+       file:
+         state: directory
+         path: "{{ item }}"
+         owner: 472
+      loop:
+        - "{{ mount_basedir }}"
+        - "{{ mount_basedir }}/etc-grafana"
+        - "{{ mount_basedir }}/var-lib-grafana"
+        - "{{ mount_basedir }}/var-log-grafana"
+
  - hosts: localhost
    gather_facts: false
    connection: local
    become: false
    tasks:
      - name: apply config
-       shell: "kubectl apply -f {{ playbook_dir }}/../k8s-templates/{{ item }}.yml"
+       shell: "kubectl apply -f {{ playbook_dir }}/../k8s-templates/{{ item }}"
        with_items:
-         - namespace
-         - ps-storageclass
-         - grafana-server-pv
-         - grafana-server-pvc
-         - grafana-secret
-         - configmap-grafana-ini
-         - grafana-deployment
-         - grafana-service
+         - namespace.yml
+         - config
+         - storage
+         - grafana-deployment.yml
+         - grafana-service.yml
 
